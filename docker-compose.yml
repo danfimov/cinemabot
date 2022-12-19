@@ -7,9 +7,9 @@ services:
     ports:
       - 5432:5432
     environment:
-      POSTGRES_USER: ${POSTGRES_USER:-cinemabot_admin}
+      POSTGRES_USER: ${POSTGRES_USER:-master}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
-      POSTGRES_DB: ${POSTGRES_DB:-cinemabot_db}
+      POSTGRES_DB: ${POSTGRES_DB:-cinemabot}
 
   redis:
     container_name: "cinemabot_redis"

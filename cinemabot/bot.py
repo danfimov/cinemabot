@@ -1,9 +1,10 @@
 from logging import INFO, basicConfig, getLogger
 
 from aiogram import Bot, Dispatcher
-from aiogram.contrib.fsm_storage.memory import MemoryStorage
+from aiogram.contrib.fsm_storage.redis import RedisStorage2
 from aiogram.contrib.middlewares.logging import LoggingMiddleware
 from aiogram.types import BotCommand
+from cashews import cache
 
 from cinemabot.config import get_settings
 from cinemabot.handlers import (
@@ -99,8 +100,12 @@ async def get_bot_and_dispatcher() -> tuple[Bot, Dispatcher]:
     )
     logger.info("Starting bot")
 
+    cache.setup(
+        "redis://0.0.0.0/", db=1, wait_for_connection_timeout=0.5, safe=False, hash_key=b"cinemabot", enable=True
+    )
+
     bot = Bot(token=get_settings().BOT_TOKEN)
-    dispatcher = Dispatcher(bot, storage=MemoryStorage())  # TODO: подменить на Redis
+    dispatcher = Dispatcher(bot, storage=RedisStorage2())
 
     # Включение мидлвали для логирования команд
     dispatcher.middleware.setup(LoggingMiddleware())

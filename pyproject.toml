@@ -16,6 +16,8 @@ python-dotenv = "^0.21.0"
 asyncpg = "^0.27.0"
 psycopg2-binary = "^2.9.5"
 aiopg = "^1.4.0"
+aioredis = "^2.0.1"
+cashews = {extras = ["redis"], version = "^5.0.0"}
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.2.0"
@@ -89,7 +91,7 @@ no_implicit_optional = true
 plugins = ["sqlalchemy.ext.mypy.plugin"]
 
 [tool.black]
-line-length = 120
+line-length = 200
 target-version = ['py310']
 include = '\.pyi?$'
 exclude = '''

@@ -1,40 +1,12 @@
 from aiogram.dispatcher import FSMContext
-from aiogram.types import CallbackQuery, InlineKeyboardButton, InlineKeyboardMarkup, Message
+from aiogram.types import CallbackQuery, Message
 
 from cinemabot.database.connector import get_db
 from cinemabot.database.core import get_search_history
 from cinemabot.database.models import SearchHistory
 from cinemabot.handlers.utils import get_state_safe
+from cinemabot.handlers.utils.keyboard_markup import construct_keyboard_markup_for_history
 from cinemabot.state import UserState
-
-
-def construct_keyboard_markup_for_history(
-    page_number: int,
-    is_empty: bool,
-    need_next: bool,
-) -> InlineKeyboardMarkup | None:
-    keyboard_markup = InlineKeyboardMarkup()
-    button_prev = InlineKeyboardButton("Назад", callback_data="history_command_prev_button")
-    button_next = InlineKeyboardButton("Вперёд", callback_data="history_command_next_button")
-
-    if is_empty:
-        if page_number > 1:
-            keyboard_markup.add(button_prev)
-            return keyboard_markup
-        else:
-            return None
-
-    if page_number > 1:
-        if need_next:
-            keyboard_markup.add(button_prev, button_next)
-        else:
-            keyboard_markup.add(button_prev)
-    else:
-        if need_next:
-            keyboard_markup.add(button_next)
-        else:
-            return None
-    return keyboard_markup
 
 
 def construct_replay_text_in_history(search_history: list[SearchHistory]) -> str:
