@@ -1,0 +1,119 @@
+[tool.poetry]
+name = "cinemabot"
+version = "0.1.0"
+description = "Bot for finding cinemas for evening"
+authors = ["Dmitry Anfimov <danfimov@yandex-team.ru>"]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+aiogram = "^2.23.1"
+pydantic = "^1.10.2"
+aiohttp = "^3.8.3"
+starlette = "^0.23.1"
+alembic = "^1.8.1"
+SQLAlchemy = "^1.4.45"
+python-dotenv = "^0.21.0"
+asyncpg = "^0.27.0"
+psycopg2-binary = "^2.9.5"
+aiopg = "^1.4.0"
+
+[tool.poetry.dev-dependencies]
+pytest = "^7.2.0"
+flake8 = "^6.0.0"
+mypy = "^0.991"
+ruff = "^0.0.178"
+pytest-asyncio = "^0.20.3"
+pytest-coverage = "^0.0"
+ConfigArgParse = "^1.5.3"
+isort = "^5.11.1"
+black = "^22.12.0"
+aresponses = "^2.1.6"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+# PYTEST
+
+[tool.pytest]
+python_files = "test_*.py"
+python_classes = ["*Test", "Test*"]
+python_functions = "test_*"
+testpaths = "tests/"
+
+[tool.coverage.report]
+exclude_lines = [
+    "# pragma: no cover",
+    "def __repr__",
+    "def __str__",
+    "def __unicode__",
+]
+show_missing = true
+skip_empty = true
+omit = [
+  "*/__init__.py",
+  "cinemabot/migrator/env.py",
+  "cinemabot/database/pool_manager",
+  "cinemabot/config",
+]
+
+[tool.coverage.html]
+directory = "pytest-cov-report"
+
+[tool.coverage.run]
+branch = true
+concurrency = ['thread', 'greenlet']
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+
+# LINTERS AND FORMATTERS
+
+[tool.ruff]
+line-length = 120
+select = ["E", "F"]
+ignore = []
+target-version = "py310"
+
+[tool.ruff.mccabe]
+# Unlike Flake8, default to a complexity level of 10.
+max-complexity = 10
+
+
+[tool.mypy]
+check_untyped_defs = true
+disallow_incomplete_defs = true
+disallow_untyped_defs = true
+ignore_missing_imports = false
+no_implicit_optional = true
+plugins = ["sqlalchemy.ext.mypy.plugin"]
+
+[tool.black]
+line-length = 120
+target-version = ['py310']
+include = '\.pyi?$'
+exclude = '''
+(
+  /(
+      \.eggs         # exclude a few common directories in the
+    | \.git          # root of the project
+    | \.hg
+    | \.mypy_cache
+    | \.tox
+    | \.venv
+    | _build
+    | buck-out
+    | build
+    | dist
+  )/
+)
+'''
+
+[tool.isort]
+known_local_folder = "cinemabot"
+profile = "black"
+lines_after_imports = 2
+multi_line_output = 3
+line_length = 120
+include_trailing_comma = true
+
