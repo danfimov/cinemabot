@@ -5,13 +5,13 @@ from cinemabot.database.base import DeclarativeBase as Base
 from cinemabot.database.mixins import UUIdMixin
 
 
-class User(Base):
+class User(Base):  # type: ignore
     __tablename__ = "user"
 
     id = Column(BIGINT, primary_key=True)
 
 
-class SearchHistory(Base, UUIdMixin):
+class SearchHistory(Base, UUIdMixin):  # type: ignore
     __tablename__ = "search_history"
 
     user_id = Column(
@@ -31,11 +31,11 @@ class SearchHistory(Base, UUIdMixin):
         doc="Date and time of create (type TIMESTAMP)",
     )
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"<SearchHistory user={self.user_id} text={self.request_text}>"
 
 
-class Film(Base, UUIdMixin):
+class Film(Base, UUIdMixin):  # type: ignore
     __tablename__ = "film"
 
     name_ru = Column(Text)
@@ -43,7 +43,7 @@ class Film(Base, UUIdMixin):
     kinopoisk_id = Column(Integer, index=True)
 
 
-class UserFilmView(Base, UUIdMixin):
+class UserFilmView(Base, UUIdMixin):  # type: ignore
     __tablename__ = "user_film_view"
 
     user_id = Column(

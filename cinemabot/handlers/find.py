@@ -78,13 +78,13 @@ async def find_command_executor(message: Message, state: FSMContext) -> None:
     )
 
 
-async def next_movie_in_find(callback_query: CallbackQuery, state: FSMContext):
+async def next_movie_in_find(callback_query: CallbackQuery, state: FSMContext) -> None:
     state_data = await get_state_safe(state)
     kinopoisk_id = state_data["find_last_viewed"]["kinopoisk_id"]
 
     prev_res = state_data["find_result"]
 
-    next_film = None
+    next_film: dict[str, Any] | None = None
     for index, film in enumerate(prev_res["films"]):
         if film["filmId"] == kinopoisk_id:
             if index != len(prev_res["films"]) - 1:
@@ -93,11 +93,12 @@ async def next_movie_in_find(callback_query: CallbackQuery, state: FSMContext):
 
     if next_film is None:
         await callback_query.message.answer(
-            text="К сожалению не удалось найти больше фильмов с таким названием. Можете начать новый поиск по команде `/find`",
+            text="К сожалению не удалось найти больше фильмов с таким названием. "
+                 "Можете начать новый поиск по команде `/find`",
             parse_mode="markdown",
         )
 
-    base_film_info = process_base_film_info(next_film)
+    base_film_info: dict[str, Any] = process_base_film_info(next_film)  # type: ignore
     state_data.update({"find_last_viewed": base_film_info})
     await state.set_data(state_data)
 
@@ -121,7 +122,7 @@ async def next_movie_in_find(callback_query: CallbackQuery, state: FSMContext):
     )
 
 
-async def movie_description_in_find(callback_query: CallbackQuery, state: FSMContext):
+async def movie_description_in_find(callback_query: CallbackQuery, state: FSMContext) -> None:
     state_data = await get_state_safe(state)
     kinopoisk_id = state_data["find_last_viewed"]["kinopoisk_id"]
 
@@ -151,7 +152,7 @@ async def cancel_find(callback_query: CallbackQuery, state: FSMContext) -> None:
     await callback_query.message.answer("Процесс поиска окончен.")
 
 
-async def action_in_canceled_find(callback_query: CallbackQuery):
+async def action_in_canceled_find(callback_query: CallbackQuery) -> None:
     print(callback_query)
     await callback_query.message.answer(
         "Вы закончили этот поиск. Чтобы начать новый, используйте команду `/find`",

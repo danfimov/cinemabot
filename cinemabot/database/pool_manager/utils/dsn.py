@@ -1,5 +1,5 @@
 from functools import lru_cache
-from typing import Optional, Union
+from typing import Any, Optional, Union
 from urllib.parse import urlencode
 
 from psycopg2._psycopg import parse_dsn
@@ -17,8 +17,8 @@ class Dsn:
         user: Optional[str] = None,
         password: Optional[str] = None,
         dbname: Optional[str] = None,
-        **kwargs,
-    ):
+        **kwargs: dict[Any, Any],
+    ) -> None:
         self._host = host
         self._port = port
         self._user = user
@@ -50,25 +50,25 @@ class Dsn:
         return dsn
 
     @lru_cache()
-    def with_(self, **kwargs) -> "Dsn":
+    def with_(self, **kwargs) -> "Dsn":  # type: ignore
         params = {
             "host": self._host,
             "port": self._port,
             "user": self._user,
             "password": self._password,
             "dbname": self._dbname,
-            **self._kwargs,
+            **self._kwargs,  # type: ignore
             **kwargs,
         }
-        return self.__class__(**params)
+        return self.__class__(**params)  # type: ignore
 
     def __str__(self) -> str:
         return self._compiled_dsn
 
-    def __eq__(self, other):
+    def __eq__(self, other: Any) -> bool:
         return str(self) == str(other)
 
-    def __hash__(self):
+    def __hash__(self) -> int:
         return hash(str(self))
 
 
@@ -83,15 +83,15 @@ def split_dsn(dsn: str, default_port: int = 5432) -> list[Dsn]:
     else:
         ports = [None] * len(hosts)
 
-    splited_dsn = []
+    splited_dsn: list[Dsn] = []
     used_dsn = set()
     for host, port in zip(hosts, ports):
         current_dsn = parsed_dsn.copy()
         current_dsn["host"] = host
         current_dsn["port"] = port or default_port
-        dsn = Dsn(**current_dsn)
-        compiled_dsn = str(dsn)
+        dsn_object: Dsn = Dsn(**current_dsn)
+        compiled_dsn = str(dsn_object)
         if compiled_dsn not in used_dsn:
             used_dsn.add(compiled_dsn)
-            splited_dsn.append(dsn)
+            splited_dsn.append(dsn_object)
     return splited_dsn

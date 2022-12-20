@@ -12,7 +12,7 @@ settings = get_settings()
 
 
 class KinopoiskClient(BaseClient):  # noqa
-    def __init__(self):
+    def __init__(self) -> None:
         super(KinopoiskClient, self).__init__(
             base_url="https://kinopoiskapiunofficial.tech/", header_tokens={"X-API-KEY": settings.KINOPOISK_API_KEY}
         )

@@ -5,14 +5,17 @@ from cinemabot.database.pool_manager.balancer_policy.base import BaseBalancerPol
 
 
 class GreedyBalancerPolicy(BaseBalancerPolicy):
-    async def _get_pool(
-        self, read_only: bool, fallback_master: Optional[bool] = None, choose_master_as_replica: bool = False
+    async def _get_pool(  # type: ignore
+        self,
+        read_only: bool,
+        fallback_master: Optional[bool] = True,
+        choose_master_as_replica: bool = False
     ):
         candidates = []
         if read_only:
             candidates.extend(
                 await self._pool_manager.get_replica_pools(
-                    fallback_master=fallback_master,
+                    fallback_master=fallback_master,  # type: ignore
                 ),
             )
         if not read_only or (choose_master_as_replica and self._pool_manager.master_pool_count > 0):

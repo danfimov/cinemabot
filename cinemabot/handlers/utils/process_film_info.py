@@ -2,12 +2,13 @@ from typing import Any
 
 
 def process_base_film_info(film_info: dict[str, Any]) -> dict[str, Any]:
+    print(film_info)
     return {
         "kinopoisk_id": film_info["filmId"],
         "name_ru": film_info["nameRu"],
         "name_eng": film_info.get("nameEn", None),
         "year": int(film_info["year"]),
-        "description": film_info["description"],
+        "description": film_info.get("description", "(описание отсутствует)"),
         "genre": [genre_object["genre"] for genre_object in film_info["genres"]],
         "poster_url": film_info["posterUrl"],
     }
@@ -19,7 +20,7 @@ def process_detail_film_info(film_info: dict[str, Any]) -> dict[str, Any]:
         "name_ru": film_info["nameRu"],
         "name_eng": film_info.get("nameEn", None),
         "year": int(film_info["year"]),
-        "description": film_info["description"],
+        "description": film_info.get("description", "(описание отсутствует)"),
         "genre": [genre_object["genre"] for genre_object in film_info["genres"]],
         "poster_url": film_info["posterUrl"],
         "people_rating": film_info["ratingKinopoisk"],
@@ -30,7 +31,7 @@ def process_detail_film_info(film_info: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def construct_movie_description_in_find(film_details):
+def construct_movie_description_in_find(film_details: dict[str, Any]) -> str:
     if film_details["hours"] is not None or film_details["minutes"] is not None:
         hours = f"{film_details['hours']} ч" if film_details["hours"] else ""
         minutes = f"{film_details['minutes']} мин" if film_details["minutes"] else ""

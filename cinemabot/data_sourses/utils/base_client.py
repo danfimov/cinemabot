@@ -1,3 +1,4 @@
+from asyncio import run
 from typing import Any
 
 from aiohttp import ClientSession
@@ -6,7 +7,7 @@ from aiohttp import ClientSession
 class Singleton:
     _instance = None
 
-    def __new__(cls, *args, **kwargs):
+    def __new__(cls, *args, **kwargs) -> "Singleton":  # type: ignore
         if not isinstance(cls._instance, cls):
             cls._instance = object.__new__(cls, *args, **kwargs)  # noqa
         return cls._instance
@@ -24,5 +25,5 @@ class BaseClient(Singleton):
         headers.update(self.header_tokens)
         return headers
 
-    def __del__(self):
-        self.session.close()
+    def __del__(self) -> None:
+        run(self.session.close())

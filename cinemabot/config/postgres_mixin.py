@@ -18,7 +18,7 @@ class PostgresMixin(BaseSettings):
         env_file_encoding = "utf-8"
 
     @property
-    def db_settings(self):
+    def db_settings(self) -> dict[str, str | int]:
         return {
             "database": self.DB_NAME,
             "user": self.DB_USER,
@@ -29,20 +29,21 @@ class PostgresMixin(BaseSettings):
         }
 
     @property
-    def database_url(self):
+    def database_url(self) -> str:
         return (
-            "postgresql+asyncpg://{user}:{password}@{host}:{port}/{database}?ssl={ssl_mode}&prepared_statement_cache_size=0"
+            "postgresql+asyncpg://{user}:{password}@{host}:{port}/{database}"
+            "?ssl={ssl_mode}&prepared_statement_cache_size=0"
         ).format(**self.db_settings)
 
     @property
-    def database_url_for_sync_connection(self):
-        return ("postgresql://{user}:{password}@{host}:{port}/{database}").format(**self.db_settings)
+    def database_url_for_sync_connection(self) -> str:
+        return "postgresql://{user}:{password}@{host}:{port}/{database}".format(**self.db_settings)
 
     @property
-    def multihost_database_url(self):
-        hosts = ",".join(f'{host}:{self.db_settings["port"]}' for host in self.db_settings["host"].split(",")).replace(
-            " ", ""
-        )
+    def multihost_database_url(self) -> str:
+        hosts = ",".join(
+            f'{host}:{self.db_settings["port"]}' for host in self.db_settings["host"].split(",")  # type: ignore
+        ).replace(" ", "")
         return "postgresql://{user}:{password}@{hosts}/{database}".format(
             hosts=hosts,
             **self.db_settings,

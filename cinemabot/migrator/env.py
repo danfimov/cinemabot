@@ -24,7 +24,7 @@ config.set_section_option(section, "SSL_MODE", settings.SSL_MODE)
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
-fileConfig(config.config_file_name, disable_existing_loggers=False)
+fileConfig(config.config_file_name, disable_existing_loggers=False)  # type: ignore
 
 # add your model's MetaData object here
 # for 'autogenerate' support
@@ -39,7 +39,7 @@ target_metadata = DeclarativeBase.metadata
 # ... etc.
 
 
-def run_migrations_offline():
+def run_migrations_offline() -> None:
     """Run migrations in 'offline' mode.
     This configures the context with just a URL
     and not an Engine, though an Engine is acceptable
@@ -61,7 +61,7 @@ def run_migrations_offline():
         context.run_migrations()
 
 
-def run_migrations_online():
+def run_migrations_online() -> None:
     """Run migrations in 'online' mode.
     In this scenario we need to create an Engine
     and associate a connection with the context.
