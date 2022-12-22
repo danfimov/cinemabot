@@ -22,8 +22,9 @@ help: ##@Help Show this help
 	@echo -e "Usage: make [target] ...\n"
 	@perl -e '$(HELP_FUN)' $(MAKEFILE_LIST)
 
-env:  ##@Environment: Set all env-variables from .env
-	export $(xargs <.env)
+install:  ##@Setup Install project requirements
+	python3 -m pip install poetry
+	poetry install
 
 run:  ##@Application Run application
 	poetry run python3 cinemabot/__main__.py
