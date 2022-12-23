@@ -131,7 +131,10 @@ async def movie_description_in_find(callback_query: CallbackQuery, state: FSMCon
     kinopoisk_id = state_data["find_last_viewed"]["kinopoisk_id"]
 
     try:
-        film_details = process_detail_film_info(await get_film_detail(kinopoisk_id))
+        film_details_from_api = await get_film_detail(kinopoisk_id)
+        film_details_from_api['poster_size'] = state_data["find_last_viewed"]['poster_size']
+        film_details = process_detail_film_info(film_details_from_api)
+
     except FilmNotFound:
         await callback_query.message.answer(
             "Извините, сервис временно недоступен",
@@ -139,8 +142,7 @@ async def movie_description_in_find(callback_query: CallbackQuery, state: FSMCon
         )
         return
 
-    await callback_query.message.answer_photo(
-        photo=film_details["poster_url"],
+    await callback_query.message.edit_caption(
         caption=construct_movie_description_in_find(film_details),
         parse_mode="markdown",
         reply_markup=construct_keyboard_markup_for_detail_view(film_details["link"]),
