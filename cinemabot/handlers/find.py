@@ -30,6 +30,12 @@ async def get_film_detail(film_kinopoisk_id: int) -> dict[str, Any]:
     return await client.get_film_details(film_kinopoisk_id)
 
 
+async def get_poster_size(film_info: dict[str, Any]) -> dict[str, Any]:
+    client = KinopoiskClient()
+    film_info.update({"poster_size": await client.get_image_size(film_info["posterUrl"])})
+    return film_info
+
+
 async def find_command_executor(message: Message, state: FSMContext) -> None:
     film_name = message.text.lstrip("/find ")
     if not film_name:
@@ -56,7 +62,9 @@ async def find_command_executor(message: Message, state: FSMContext) -> None:
 
         await state.set_state(UserState.find_state.state)
         state_data = await get_state_safe(state)
-        base_film_info = process_base_film_info(film_info_from_client["films"][0])
+        film_info = film_info_from_client["films"][0]
+        film_info = await get_poster_size(film_info)
+        base_film_info = process_base_film_info(film_info)
         state_data.update({"find_result": film_info_from_client, "find_last_viewed": base_film_info})
         await state.set_data(state_data)
 
@@ -70,9 +78,7 @@ async def find_command_executor(message: Message, state: FSMContext) -> None:
 
     await message.answer_photo(
         photo=base_film_info["poster_url"],
-        caption=f"*{base_film_info['name_ru']} [{base_film_info['year']}]*\n\n"
-        f"_Жанр_: {', '.join(base_film_info['genre'])}\n\n"
-        f"_Описание_:\n{base_film_info['description']}",
+        caption=f"*{base_film_info['name_ru']} [{base_film_info['year']}]*\n\n" f"_Жанр_: {', '.join(base_film_info['genre'])}\n\n" f"_Описание_:\n{base_film_info['description']}",
         parse_mode="markdown",
         reply_markup=construct_keyboard_markup_for_find(),
     )
@@ -93,11 +99,11 @@ async def next_movie_in_find(callback_query: CallbackQuery, state: FSMContext) -
 
     if next_film is None:
         await callback_query.message.answer(
-            text="К сожалению не удалось найти больше фильмов с таким названием. "
-                 "Можете начать новый поиск по команде `/find`",
+            text="К сожалению не удалось найти больше фильмов с таким названием. " "Можете начать новый поиск по команде `/find`",
             parse_mode="markdown",
         )
 
+    next_film = await get_poster_size(next_film)
     base_film_info: dict[str, Any] = process_base_film_info(next_film)  # type: ignore
     state_data.update({"find_last_viewed": base_film_info})
     await state.set_data(state_data)
@@ -114,9 +120,7 @@ async def next_movie_in_find(callback_query: CallbackQuery, state: FSMContext) -
 
     await callback_query.message.answer_photo(
         photo=base_film_info["poster_url"],
-        caption=f"*{base_film_info['name_ru']} [{base_film_info['year']}]*\n\n"
-        f"_Жанр_: {', '.join(base_film_info['genre'])}\n\n"
-        f"_Описание_:\n{base_film_info['description']}",
+        caption=f"*{base_film_info['name_ru']} [{base_film_info['year']}]*\n\n" f"_Жанр_: {', '.join(base_film_info['genre'])}\n\n" f"_Описание_:\n{base_film_info['description']}",
         parse_mode="markdown",
         reply_markup=construct_keyboard_markup_for_find(),
     )
@@ -153,7 +157,6 @@ async def cancel_find(callback_query: CallbackQuery, state: FSMContext) -> None:
 
 
 async def action_in_canceled_find(callback_query: CallbackQuery) -> None:
-    print(callback_query)
     await callback_query.message.answer(
         "Вы закончили этот поиск. Чтобы начать новый, используйте команду `/find`",
         parse_mode="Markdown",

@@ -5,12 +5,7 @@ from cinemabot.database.pool_manager.balancer_policy.base import BaseBalancerPol
 
 
 class GreedyBalancerPolicy(BaseBalancerPolicy):
-    async def _get_pool(  # type: ignore
-        self,
-        read_only: bool,
-        fallback_master: Optional[bool] = True,
-        choose_master_as_replica: bool = False
-    ):
+    async def _get_pool(self, read_only: bool, fallback_master: Optional[bool] = True, choose_master_as_replica: bool = False):  # type: ignore
         candidates = []
         if read_only:
             candidates.extend(
@@ -23,9 +18,7 @@ class GreedyBalancerPolicy(BaseBalancerPolicy):
 
         fat_pool = max(candidates, key=self._pool_manager.get_pool_freesize)
         max_freesize = self._pool_manager.get_pool_freesize(fat_pool)
-        return random.choice(
-            [candidate for candidate in candidates if self._pool_manager.get_pool_freesize(candidate) == max_freesize]
-        )
+        return random.choice([candidate for candidate in candidates if self._pool_manager.get_pool_freesize(candidate) == max_freesize])
 
 
 __all__ = ["GreedyBalancerPolicy"]

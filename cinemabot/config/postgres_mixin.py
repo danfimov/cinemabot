@@ -30,10 +30,7 @@ class PostgresMixin(BaseSettings):
 
     @property
     def database_url(self) -> str:
-        return (
-            "postgresql+asyncpg://{user}:{password}@{host}:{port}/{database}"
-            "?ssl={ssl_mode}&prepared_statement_cache_size=0"
-        ).format(**self.db_settings)
+        return ("postgresql+asyncpg://{user}:{password}@{host}:{port}/{database}" "?ssl={ssl_mode}&prepared_statement_cache_size=0").format(**self.db_settings)
 
     @property
     def database_url_for_sync_connection(self) -> str:
@@ -41,9 +38,7 @@ class PostgresMixin(BaseSettings):
 
     @property
     def multihost_database_url(self) -> str:
-        hosts = ",".join(
-            f'{host}:{self.db_settings["port"]}' for host in self.db_settings["host"].split(",")  # type: ignore
-        ).replace(" ", "")
+        hosts = ",".join(f'{host}:{self.db_settings["port"]}' for host in self.db_settings["host"].split(",")).replace(" ", "")  # type: ignore
         return "postgresql://{user}:{password}@{hosts}/{database}".format(
             hosts=hosts,
             **self.db_settings,
