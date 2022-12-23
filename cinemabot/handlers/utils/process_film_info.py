@@ -29,7 +29,7 @@ def process_base_film_info(film_info: dict[str, Any]) -> dict[str, Any]:
         "description": film_info.get("description", "(описание отсутствует)"),
         "genre": [genre_object["genre"] for genre_object in film_info["genres"]],
         "poster_url": pick_poster_url(film_info),
-        "poster_size": film_info['poster_size'],
+        "poster_size": film_info["poster_size"],
     }
 
 

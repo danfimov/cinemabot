@@ -13,7 +13,7 @@ def construct_replay_text_in_stats(stats: list[tuple[int, str]]) -> str:
         return "Больше статистики нет. Попробуйте поискать что-нибудь командой `/find`"
     res = [f"- ({stat[0]}) `{stat[1]}`" for stat in stats]
 
-    title = '*Статистика показов фильмов:*\n\n'
+    title = "*Статистика показов фильмов:*\n\n"
     return title + "\n".join(res)
 
 

@@ -132,7 +132,7 @@ async def movie_description_in_find(callback_query: CallbackQuery, state: FSMCon
 
     try:
         film_details_from_api = await get_film_detail(kinopoisk_id)
-        film_details_from_api['poster_size'] = state_data["find_last_viewed"]['poster_size']
+        film_details_from_api["poster_size"] = state_data["find_last_viewed"]["poster_size"]
         film_details = process_detail_film_info(film_details_from_api)
 
     except FilmNotFound:

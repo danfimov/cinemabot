@@ -13,7 +13,7 @@ def construct_replay_text_in_history(search_history: list[SearchHistory]) -> str
     if not search_history:
         return "Ничего не найдено. Попробуйте поискать что-нибудь командой `/find`"
     res = [f"- ({request.dt_created.date()}) `{request.request_text}`" for request in search_history]
-    title = '*История поисковых запросов:*\n\n'
+    title = "*История поисковых запросов:*\n\n"
     return title + "\n".join(res)
 
 
