@@ -29,9 +29,7 @@ def upgrade() -> None:
         sa.UniqueConstraint("id", name=op.f("uq__film__id")),
     )
     op.create_index(op.f("ix__film__kinopoisk_id"), "film", ["kinopoisk_id"], unique=False)
-    op.create_table(
-        "user", sa.Column("id", sa.Integer(), nullable=False), sa.PrimaryKeyConstraint("id", name=op.f("pk__user"))
-    )
+    op.create_table("user", sa.Column("id", sa.Integer(), nullable=False), sa.PrimaryKeyConstraint("id", name=op.f("pk__user")))
     op.create_table(
         "search_history",
         sa.Column("id", postgresql.UUID(as_uuid=True), server_default=sa.text("gen_random_uuid()"), nullable=False),

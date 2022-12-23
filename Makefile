@@ -50,6 +50,7 @@ lint:  ##@Code Check code with pylint
 format:  ##@Code Reformat code with isort and black
 	poetry run python3 -m isort $(CODE) tests
 	poetry run python3 -m black $(CODE)
+	poetry run python3 -m ruff $(CODE) --fix
 
 clean:  ##@Code Clean directory from garbage files
 	rm -fr *.egg-info dist

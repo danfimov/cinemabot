@@ -114,9 +114,7 @@ class BasePoolManager(ABC):
         self._replica_cond = asyncio.Condition()
         self._unmanaged_connections: dict[aiopg.Connection, aiopg.Pool] = {}
         self._stopwatch = Stopwatch(window_size=stopwatch_window_size)
-        self._refresh_role_tasks = [
-            asyncio.create_task(self._check_pool_task(index)) for index in range(len(self._dsn))
-        ]
+        self._refresh_role_tasks = [asyncio.create_task(self._check_pool_task(index)) for index in range(len(self._dsn))]
         self._closing = False
         self._closed = False
 
@@ -294,13 +292,9 @@ class BasePoolManager(ABC):
             for _ in range(2):
                 await self._dsn_check_cond[dsn].wait()
 
-    async def ready(
-        self, masters_count: Optional[int] = None, replicas_count: Optional[int] = None, timeout: int = 10
-    ) -> None:
+    async def ready(self, masters_count: Optional[int] = None, replicas_count: Optional[int] = None, timeout: int = 10) -> None:
 
-        if (masters_count is not None and replicas_count is None) or (
-            masters_count is None and replicas_count is not None
-        ):
+        if (masters_count is not None and replicas_count is None) or (masters_count is None and replicas_count is not None):
             raise ValueError(
                 "Arguments master_count and replicas_count " "should both be either None or not None",
             )

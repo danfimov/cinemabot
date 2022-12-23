@@ -65,9 +65,7 @@ def register_handlers_common(dp: Dispatcher) -> None:
     )
     dp.register_callback_query_handler(
         action_in_canceled_find,
-        lambda c: c.data == "find_command_stop_button"
-        or c.data == "find_command_detail_button"
-        or c.data == "find_command_next_button",
+        lambda c: c.data == "find_command_stop_button" or c.data == "find_command_detail_button" or c.data == "find_command_next_button",
         state="*",
     )
     dp.register_callback_query_handler(
@@ -100,9 +98,7 @@ async def get_bot_and_dispatcher() -> tuple[Bot, Dispatcher]:
     )
     logger.info("Starting bot")
 
-    cache.setup(
-        "redis://0.0.0.0/", db=1, wait_for_connection_timeout=0.5, safe=False, hash_key=b"cinemabot", enable=True
-    )
+    cache.setup("redis://0.0.0.0/", db=1, wait_for_connection_timeout=0.5, safe=False, hash_key=b"cinemabot", enable=True)
 
     bot = Bot(token=get_settings().BOT_TOKEN)
     dispatcher = Dispatcher(bot, storage=RedisStorage2())

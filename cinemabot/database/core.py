@@ -49,9 +49,7 @@ async def get_or_create_user_film_view(
     user_id: int,
     film_id: int,
 ) -> UserFilmView:
-    existing_user_film_view_query = select(UserFilmView).filter(
-        UserFilmView.film_id == film_id, UserFilmView.user_id == user_id
-    )
+    existing_user_film_view_query = select(UserFilmView).filter(UserFilmView.film_id == film_id, UserFilmView.user_id == user_id)
     existing_film = await session.scalar(existing_user_film_view_query)
     if existing_film is not None:
         return existing_film
@@ -95,13 +93,7 @@ async def get_search_history(
     page_number: int,
     page_size: int = 10,
 ) -> list[SearchHistory]:
-    query = (
-        select(SearchHistory)
-        .filter(SearchHistory.user_id == user_id)
-        .limit(page_size)
-        .offset((page_number - 1) * 10)
-        .order_by(SearchHistory.dt_created.desc())
-    )
+    query = select(SearchHistory).filter(SearchHistory.user_id == user_id).limit(page_size).offset((page_number - 1) * 10).order_by(SearchHistory.dt_created.desc())
     history_rows = (await session.execute(query)).fetchall()
     return [row[0] for row in history_rows]
 
