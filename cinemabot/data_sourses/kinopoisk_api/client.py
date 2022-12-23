@@ -34,9 +34,10 @@ class KinopoiskClient(BaseClient):  # noqa
             urljoin(self.base_url, f"api/v2.2/films/{film_kinopoisk_id}"),
             headers=self.make_headers(),
         ) as response:
+            response_data = await response.json()
             if response.status != status.HTTP_200_OK:
                 raise FilmNotFound
-        return await response.json()
+        return response_data
 
     @cache(ttl="24h", key="{url}")
     async def get_image_size(self, url: str) -> int:

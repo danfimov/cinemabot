@@ -13,7 +13,8 @@ def construct_replay_text_in_history(search_history: list[SearchHistory]) -> str
     if not search_history:
         return "Ничего не найдено. Попробуйте поискать что-нибудь командой `/find`"
     res = [f"- ({request.dt_created.date()}) `{request.request_text}`" for request in search_history]
-    return "\n".join(res)
+    title = "*История поисковых запросов:*\n\n"
+    return title + "\n".join(res)
 
 
 async def history_command_executor(message: Message, state: FSMContext) -> None:
@@ -61,7 +62,7 @@ async def get_history_page(callback_query: CallbackQuery, state: FSMContext, is_
             user_id=callback_query.message.chat.id,
             page_number=page_number,
         )
-    await callback_query.message.answer(
+    await callback_query.message.edit_text(
         text=construct_replay_text_in_history(search_history),
         parse_mode="markdown",
         reply_markup=construct_keyboard_markup_for_history(

@@ -29,6 +29,7 @@ def process_base_film_info(film_info: dict[str, Any]) -> dict[str, Any]:
         "description": film_info.get("description", "(описание отсутствует)"),
         "genre": [genre_object["genre"] for genre_object in film_info["genres"]],
         "poster_url": pick_poster_url(film_info),
+        "poster_size": film_info["poster_size"],
     }
 
 
@@ -51,7 +52,7 @@ def process_detail_film_info(film_info: dict[str, Any]) -> dict[str, Any]:
 
 def construct_movie_description_in_find(film_details: dict[str, Any]) -> str:
     if film_details["hours"] is not None or film_details["minutes"] is not None:
-        hours = f"{film_details['hours']} ч" if film_details["hours"] else ""
+        hours = f"{film_details['hours']} ч " if film_details["hours"] else ""
         minutes = f"{film_details['minutes']} мин" if film_details["minutes"] else ""
         duration = "".join(["_Продолжительность_: ", hours, minutes])
     else:

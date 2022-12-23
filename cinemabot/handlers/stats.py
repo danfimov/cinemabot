@@ -12,7 +12,9 @@ def construct_replay_text_in_stats(stats: list[tuple[int, str]]) -> str:
     if not stats:
         return "Больше статистики нет. Попробуйте поискать что-нибудь командой `/find`"
     res = [f"- ({stat[0]}) `{stat[1]}`" for stat in stats]
-    return "\n".join(res)
+
+    title = "*Статистика показов фильмов:*\n\n"
+    return title + "\n".join(res)
 
 
 async def stats_command_executor(message: Message, state: FSMContext) -> None:
@@ -60,7 +62,7 @@ async def get_stats_page(callback_query: CallbackQuery, state: FSMContext, is_ne
             user_id=callback_query.message.chat.id,
             page_number=page_number,
         )
-    await callback_query.message.answer(
+    await callback_query.message.edit_text(
         text=construct_replay_text_in_stats(statistic),
         parse_mode="markdown",
         reply_markup=construct_keyboard_markup_for_stats(
