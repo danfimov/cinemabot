@@ -293,7 +293,6 @@ class BasePoolManager(ABC):
                 await self._dsn_check_cond[dsn].wait()
 
     async def ready(self, masters_count: Optional[int] = None, replicas_count: Optional[int] = None, timeout: int = 10) -> None:
-
         if (masters_count is not None and replicas_count is None) or (masters_count is None and replicas_count is not None):
             raise ValueError(
                 "Arguments master_count and replicas_count " "should both be either None or not None",
