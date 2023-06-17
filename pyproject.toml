@@ -5,9 +5,9 @@ description = "Bot for finding cinemas for evening"
 authors = ["Dmitry Anfimov <danfimov@yandex-team.ru>"]
 
 [tool.poetry.dependencies]
-python = "^3.10"
-aiogram = "^2.23.1"
-pydantic = "^1.10.2"
+python = "^3.11.0"
+aiogram = "^2.25.1"
+pydantic = "^1.10.9"
 aiohttp = "^3.8.3"
 starlette = "^0.23.1"
 alembic = "^1.8.1"
@@ -18,17 +18,16 @@ psycopg2-binary = "^2.9.5"
 aiopg = "^1.4.0"
 aioredis = "^2.0.1"
 cashews = {extras = ["redis"], version = "^5.0.0"}
+greenlet = "^2.0.2"
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.2.0"
-flake8 = "^6.0.0"
-mypy = "^0.991"
-ruff = "^0.0.191"
-pytest-asyncio = "^0.20.3"
+mypy = "^1.3.0"
+ruff = "^0.0.272"
+pytest-asyncio = "^0.21.0"
 pytest-coverage = "^0.0"
 ConfigArgParse = "^1.5.3"
-isort = "^5.11.4"
-black = "^22.12.0"
+black = "^23.3.0"
 aresponses = "^2.1.6"
 
 [build-system]
@@ -73,14 +72,17 @@ asyncio_mode = "auto"
 
 [tool.ruff]
 line-length = 200
-select = ["E", "F"]
+select = ["E", "F", "I001"]
 ignore = []
-target-version = "py310"
+target-version = "py311"
 
 [tool.ruff.mccabe]
 # Unlike Flake8, default to a complexity level of 10.
 max-complexity = 10
 
+[tool.ruff.isort]
+known-local-folder = ["cinemabot"]
+lines-after-imports = 2
 
 [tool.mypy]
 check_untyped_defs = true
@@ -92,7 +94,7 @@ plugins = ["sqlalchemy.ext.mypy.plugin"]
 
 [tool.black]
 line-length = 200
-target-version = ['py310']
+target-version = ['py311']
 include = '\.pyi?$'
 exclude = '''
 (
@@ -110,12 +112,3 @@ exclude = '''
   )/
 )
 '''
-
-[tool.isort]
-known_local_folder = "cinemabot"
-profile = "black"
-lines_after_imports = 2
-multi_line_output = 3
-line_length = 120
-include_trailing_comma = true
-

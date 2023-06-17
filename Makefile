@@ -45,12 +45,11 @@ test-cov:  ##@Testing Test application with pytest and create coverage report
 	make db && $(TEST) --cov=$(APPLICATION_NAME) --cov-report html --cov-fail-under=70
 
 lint:  ##@Code Check code with pylint
-	poetry run python3 -m ruff $(CODE)
+	poetry run python3 -m ruff $(CODE) tests
 
-format:  ##@Code Reformat code with isort and black
-	poetry run python3 -m isort $(CODE) tests
+format:  ##@Code Reformat code with ruff and black
 	poetry run python3 -m black $(CODE)
-	poetry run python3 -m ruff $(CODE) --fix
+	poetry run python3 -m ruff $(CODE) tests --fix
 
 clean:  ##@Code Clean directory from garbage files
 	rm -fr *.egg-info dist
