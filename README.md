@@ -68,13 +68,13 @@
 Склонируйте код проекта
 
 ```bash
-  git clone https://gitlab.manytask.org/python/students-fall-2022/danfimov.git
+  git clone git@github.com:danfimov/cinemabot.git
 ```
 
 Перейдите в директорию с проектом
 
 ```bash
-  cd 13.3.HW3/cinemabot
+  cd cinemabot
 ```
 
 Установите [Poetry](https://python-poetry.org/). Подробнее об установке можно почитать в [официальной документации Poetry](https://python-poetry.org/docs/#installation).
