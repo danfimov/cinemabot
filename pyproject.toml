@@ -1,40 +1,36 @@
-[tool.poetry]
-name = "cinemabot"
-version = "0.1.0"
-description = "Bot for finding cinemas for evening"
-authors = ["Dmitry Anfimov <danfimov@yandex-team.ru>"]
+[project]
+name = 'cinemabot'
+version = "1.0.0"
+description = "Bot for finding films for evening"
+requires-python = ">=3.11"
+authors = [
+    { name = "Anfimov Dima", email = "danfimov@yandex.ru" },
+]
+dependencies = [
+    "aiogram>=3.19.0",
+    "alembic>=1.15.2",
+    "asyncpg>=0.30.0",
+    "greenlet>=3.1.1",
+    "psycopg2-binary>=2.9.10",
+    "pydantic>=2.10.6",
+    "pydantic-settings>=2.8.1",
+    "pyyaml>=6.0.2",
+    "redis>=5.2.1",
+    "sqlalchemy>=2.0.40",
+    "uvloop>=0.21.0",
+]
+package-mode = false
 
-[tool.poetry.dependencies]
-python = "^3.11.0"
-aiogram = "^2.25.1"
-pydantic = "^1.10.9"
-aiohttp = "^3.8.3"
-starlette = "^0.23.1"
-alembic = "^1.8.1"
-SQLAlchemy = "^1.4.45"
-python-dotenv = "^0.21.0"
-asyncpg = "^0.27.0"
-psycopg2-binary = "^2.9.5"
-aiopg = "^1.4.0"
-aioredis = "^2.0.1"
-cashews = {extras = ["redis"], version = "^5.0.0"}
-greenlet = "^2.0.2"
-
-[tool.poetry.dev-dependencies]
-pytest = "^7.2.0"
-mypy = "^1.3.0"
-ruff = "^0.0.272"
-pytest-asyncio = "^0.21.0"
-pytest-coverage = "^0.0"
-ConfigArgParse = "^1.5.3"
-black = "^23.3.0"
-aresponses = "^2.1.6"
-
-[build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
-
-# PYTEST
+[dependency-groups]
+dev = [
+    "aresponses>=3.0.0",
+    "configargparse>=1.7",
+    "mypy>=1.15.0",
+    "pytest>=8.3.5",
+    "pytest-asyncio>=0.26.0",
+    "pytest-cov>=6.1.1",
+    "ruff>=0.11.4",
+]
 
 [tool.pytest]
 python_files = "test_*.py"
@@ -52,10 +48,10 @@ exclude_lines = [
 show_missing = true
 skip_empty = true
 omit = [
-  "*/__init__.py",
-  "cinemabot/migrator/env.py",
-  "cinemabot/database/pool_manager",
-  "cinemabot/config",
+    "*/__init__.py",
+    "cinemabot/migrator/env.py",
+    "cinemabot/database/pool_manager",
+    "cinemabot/config",
 ]
 
 [tool.coverage.html]
@@ -66,21 +62,30 @@ branch = true
 concurrency = ['thread', 'greenlet']
 
 [tool.pytest.ini_options]
+pythonpath = [
+  "."
+]
 asyncio_mode = "auto"
-
-# LINTERS AND FORMATTERS
+asyncio_default_fixture_loop_scope = "function"
+markers = [
+    "unit: marks unit tests",
+    "integration: marks tests with real infrastructure env",
+    "linting: marks tests as linter/static analyzers",
+]
 
 [tool.ruff]
 line-length = 200
-select = ["E", "F", "I001"]
-ignore = []
 target-version = "py311"
 
-[tool.ruff.mccabe]
+[tool.ruff.lint]
+ignore = []
+select = ["E", "F", "I001"]
+
+[tool.ruff.lint.mccabe]
 # Unlike Flake8, default to a complexity level of 10.
 max-complexity = 10
 
-[tool.ruff.isort]
+[tool.ruff.lint.isort]
 known-local-folder = ["cinemabot"]
 lines-after-imports = 2
 
@@ -91,24 +96,3 @@ disallow_untyped_defs = true
 ignore_missing_imports = false
 no_implicit_optional = true
 plugins = ["sqlalchemy.ext.mypy.plugin"]
-
-[tool.black]
-line-length = 200
-target-version = ['py311']
-include = '\.pyi?$'
-exclude = '''
-(
-  /(
-      \.eggs         # exclude a few common directories in the
-    | \.git          # root of the project
-    | \.hg
-    | \.mypy_cache
-    | \.tox
-    | \.venv
-    | _build
-    | buck-out
-    | build
-    | dist
-  )/
-)
-'''

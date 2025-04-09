@@ -1,49 +1,46 @@
-FROM python:3.10-slim AS python-base
+FROM python:3.11.5 as python-base
 
-ENV PYTHONUNBUFFERED=1 \
-    PYTHONDONTWRITEBYTECODE=1 \
-    PIP_NO_CACHE_DIR=off \
-    PIP_DISABLE_PIP_VERSION_CHECK=on \
-    PIP_DEFAULT_TIMEOUT=100 \
-    POETRY_HOME="/opt/poetry" \
-    POETRY_VIRTUALENVS_IN_PROJECT=true \
-    POETRY_NO_INTERACTION=1 \
-    PYSETUP_PATH="/opt/pysetup" \
-    VENV_PATH="/opt/pysetup/.venv"
+# Turn of logs buffering for faster logging
+# Do not write *.pyc in a container
+# Turns off writing cache to keep smaller image size
+# Faster building
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PIP_NO_CACHE_DIR=off
+ENV PIP_DISABLE_PIP_VERSION_CHECK=on
+ENV PIP_DEFAULT_TIMEOUT=200
+ENV PIP_INDEX_URL=https://pypi.org/simple/
+# force the use of system CA certificate bundle, not certifi
+ENV SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
 
-ENV PATH="$POETRY_HOME/bin:$VENV_PATH/bin:$PATH"
+RUN wget https://crls.yandex.net/YandexInternalRootCA.crt -O /usr/local/share/ca-certificates/YandexInternalRootCA.crt && \
+    update-ca-certificates
+
+RUN python -m venv /opt/poetry
+RUN /opt/poetry/bin/pip install --no-cache-dir poetry==1.7.0
+RUN ln -svT /opt/poetry/bin/poetry /usr/local/bin/poetry
+RUN poetry config virtualenvs.in-project true
 
 FROM python-base AS builder-base
 
-# System apt packages
-RUN apt-get update \
-    && apt-get install --no-install-recommends -y \
-        curl \
-        build-essential \
+WORKDIR /app
+RUN useradd appuser
 
-    # removed all unnecessary packages after installation
-    && rm -rf /var/lib/apt/lists/*
+RUN poetry config virtualenvs.in-project true
+COPY pyproject.toml poetry.lock README.md ./
+RUN poetry install --no-interaction --no-ansi --no-root --without dev \
+    && rm -rf ~/.cache/pypoetry/{cache,artifacts}
 
-# Update pip and related packages first
-RUN pip install --upgrade pip==22.3
+COPY ./docker ./docker
+COPY ./cinemabot ./cinemabot
 
-# Install Poetry - respects $POETRY_VERSION & $POETRY_HOME
- RUN curl -sSL https://install.python-poetry.org | python3 - --version 1.1.14
+ARG APP_VERSION="0.0.0+docker"
+RUN poetry version $APP_VERSION
+RUN poetry install --no-interaction --no-ansi --without dev
 
-WORKDIR $PYSETUP_PATH
-COPY ./poetry.lock ./pyproject.toml ./
-RUN poetry install --no-dev --no-root
+USER root
 
-FROM python-base AS bot
+EXPOSE 8000/tcp
 
-# Copying poetry and venv into image
-COPY --from=builder-base $POETRY_HOME $POETRY_HOME
-COPY --from=builder-base $PYSETUP_PATH $PYSETUP_PATH
-
-WORKDIR $PYSETUP_PATH
-
-COPY . .
-
-RUN poetry install
-
+ENTRYPOINT ["docker/entrypoint"]
 CMD ["poetry", "run", "python3" , "cinemabot/__main__.py"]

@@ -1,6 +1,6 @@
 # Cinemabot
 
-Проект бота, предназначенного для поиска фильмов по названию. 
+Проект бота, предназначенного для поиска фильмов по названию.
 
 Бот доступен в Telegram под ником [@anfimov_cinema_bot](https://t.me/anfimov_cinema_bot).
 
@@ -13,7 +13,7 @@
 
 ### /find название фильма
 
-Выполняет поиска фильма по ключевому слову/словам. Отдает пользователю описание фильма + название. 
+Выполняет поиска фильма по ключевому слову/словам. Отдает пользователю описание фильма + название.
 Дальше доступны три опции:
 
 - Если фильм не тот — можно продолжить поиск и пролистывать фильмы, пока они не закончатся в поисковой выдаче.
@@ -24,7 +24,7 @@
 
 ### /history
 
-Забирает из базы историю запросов пользователя. Выводит на экран в виде списка фильмов с датами поиска в скобках. 
+Забирает из базы историю запросов пользователя. Выводит на экран в виде списка фильмов с датами поиска в скобках.
 Если история длинная - она разбивается на страницы по 10 записей.
 
 Может показывать дубли — не баг, а фича — когда пользователь, например, дважды искал одно и тоже.
@@ -57,7 +57,7 @@
 ## Deploy details
 
 Деплоил в Yandex Cloud:
-- в качестве менеджера зависимостей использовал poetry;
+- в качестве менеджера зависимостей использовал uv;
 - создал сеть и виртуальную машину с Ubuntu;
 - склонировал туда код из своего репозитория;
 - используя tmux, зашел по ssh на машинку для поднятия баз через docker compose и запуска самого приложения;
@@ -68,56 +68,38 @@
 Склонируйте код проекта
 
 ```bash
-  git clone https://gitlab.manytask.org/python/students-fall-2022/danfimov.git
+git clone https://gitlab.manytask.org/python/students-fall-2022/danfimov.git
 ```
 
 Перейдите в директорию с проектом
 
 ```bash
-  cd 13.3.HW3/cinemabot
+cd cinemabot
 ```
 
-Установите [Poetry](https://python-poetry.org/). Подробнее об установке можно почитать в [официальной документации Poetry](https://python-poetry.org/docs/#installation).
+Установите [uv](https://docs.astral.sh/uv/). Подробнее об установке можно почитать в [официальной документации](https://docs.astral.sh/uv/getting-started/installation/).
 
 ```bash
-  curl -sSL https://install.python-poetry.org | python3 -
+curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
 Установите зависимости
 
 ```bash
-  poetry install 
+uv sync --all-extras
 ```
 
-Создайте файл `.env` с необходимыми переменными для работы бота и базы данных
+Создайте файл `conf/.env` с необходимыми переменными для работы бота и базы данных
 
 ```bash
-# Env variables example
-BOT_TOKEN="<your_bot_token>"  # from BotFather
-KINOPOISK_API_KEY="<your_token>"  # from kinopoiskapiunofficial.tech/
-POSTGRES_USER="cinemabot_admin"
-POSTGRES_PASSWORD="password"
-POSTGRES_DB="cinemabot_db"
+cp conf/.env.example conf/.env
 ```
 
-Запустите базу данных с помощью [docker-compose](https://docs.docker.com/compose/)
+Запустите базу данных и приложение с помощью [docker-compose](https://docs.docker.com/compose/)
 
 ```bash
-  make db
+make up
 ```
-
-Запустите миграции, чтобы создать в базе необходимые сущности
-
-```bash
-  make migrate
-```
-
-Запустите бота
-
-```bash
-  make run
-```
-
 
 ## Roadmap
 
