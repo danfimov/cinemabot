@@ -27,7 +27,7 @@ run:  ##@Application Run application
 	python3 -m cinemabot
 
 up:  ##@AApplication Create databases and app containers with docker-compose
-	docker-compose -f docker-compose.yml up -d --remove-orphans
+	docker-compose -f docker-compose.yaml up -d --remove-orphans --build
 
 migrate:  ##@Database Create database with docker-compose
 	python3 -m cinemabot.infrastructure.database.migrations upgrade head
