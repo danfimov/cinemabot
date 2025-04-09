@@ -1,13 +1,18 @@
-from asyncio import run
+import uvloop
 
-from cinemabot.bot import get_bot_and_dispatcher
+from cinemabot import dependencies
+from cinemabot.infrastructure.logs import configure_logging
 
 
 async def main() -> None:
-    bot, dispatcher = await get_bot_and_dispatcher()
-
-    await dispatcher.start_polling()
+    settings = dependencies.get_settings()
+    configure_logging(
+        path_to_log_config=settings.log_config_path,
+        root_level=settings.log_level,
+    )
+    dispatcher, bot = await dependencies.get_dispatcher_and_bot()
+    await dispatcher.start_polling(bot)
 
 
 if __name__ == "__main__":
-    run(main())
+    uvloop.run(main())

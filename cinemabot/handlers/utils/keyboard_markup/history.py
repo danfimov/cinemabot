@@ -6,25 +6,29 @@ def construct_keyboard_markup_for_history(
     is_empty: bool,
     need_next: bool,
 ) -> InlineKeyboardMarkup | None:
-    keyboard_markup = InlineKeyboardMarkup()
-    button_prev = InlineKeyboardButton("Назад", callback_data="history_command_prev_button")
-    button_next = InlineKeyboardButton("Вперёд", callback_data="history_command_next_button")
+    # Создаем кнопки
+    button_prev = InlineKeyboardButton(text="Назад", callback_data="history_command_prev_button")
+    button_next = InlineKeyboardButton(text="Вперёд", callback_data="history_command_next_button")
 
+    # Проверяем случай с пустыми результатами
     if is_empty:
         if page_number > 1:
-            keyboard_markup.add(button_prev)
-            return keyboard_markup
+            # Создаем клавиатуру с одной кнопкой "Назад"
+            return InlineKeyboardMarkup(inline_keyboard=[[button_prev]])
         else:
             return None
 
+    # Обрабатываем остальные случаи
     if page_number > 1:
         if need_next:
-            keyboard_markup.add(button_prev, button_next)
+            # Кнопки "Назад" и "Вперёд"
+            return InlineKeyboardMarkup(inline_keyboard=[[button_prev, button_next]])
         else:
-            keyboard_markup.add(button_prev)
+            # Только кнопка "Назад"
+            return InlineKeyboardMarkup(inline_keyboard=[[button_prev]])
     else:
         if need_next:
-            keyboard_markup.add(button_next)
+            # Только кнопка "Вперёд"
+            return InlineKeyboardMarkup(inline_keyboard=[[button_next]])
         else:
             return None
-    return keyboard_markup

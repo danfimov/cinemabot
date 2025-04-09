@@ -1,0 +1,28 @@
+services:
+  app:
+    container_name: cinemabot_app
+    build: .
+    restart: always
+    env_file:
+      - conf/.env
+    depends_on:
+      - postgres
+      - redis
+    ports:
+      - 8000:8000
+
+  postgres:
+    container_name: cinemabot_postgres
+    image: postgres:16
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: ${POSTGRES__USER:-cinemabot_admin}
+      POSTGRES_PASSWORD: ${POSTGRES__PASSWORD:-password}
+      POSTGRES_DB: ${POSTGRES__DATABASE:-cinemabot_db}
+
+  redis:
+    container_name: cinemabot_redis
+    image: redis:6-alpine
+    ports:
+      - ${REDIS_PORT-6379}:6379
