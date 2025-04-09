@@ -36,10 +36,10 @@ revision:  ##@Database Create database with docker-compose
 	python3 -m cinemabot.infrastructure.database.migrations revision --autogenerate --message $(args)
 
 test:  ##@Testing Test application with pytest
-	make db && $(TEST)
+	$(TEST)
 
 test-cov:  ##@Testing Test application with pytest and create coverage report
-	make db && $(TEST) --cov=$(CODE) --cov-report html --cov-fail-under=70
+	$(TEST) --cov=$(CODE) --cov-report html --cov-fail-under=70
 
 lint:  ##@Code Check code with pylint
 	ruff check .
